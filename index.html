@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="CFA Level I 2027 study plan and daily progress tracker." />
+  <meta name="theme-color" content="#0f2742" />
+  <title>CFA Level I 2027 Study Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">CFA</div>
+        <div>
+          <h1>Level I Tracker</h1>
+          <p>26 Feb 2027</p>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Main navigation">
+        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+        <button class="nav-btn" data-view="daily">Daily Log</button>
+        <button class="nav-btn" data-view="topics">Topic Plan</button>
+        <button class="nav-btn" data-view="weekly">Weekly Plan</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="exam-chip">
+          <span>Exam</span>
+          <strong>26 Feb 2027</strong>
+        </div>
+        <button id="exportBtn" class="secondary-btn full">Export backup</button>
+        <label class="secondary-btn full file-label">
+          Import backup
+          <input id="importInput" type="file" accept=".json" hidden />
+        </label>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">CFA Level I · February 2027</p>
+          <h2 id="viewTitle">Dashboard</h2>
+        </div>
+        <div class="topbar-actions">
+          <div class="today-pill" id="todayPill"></div>
+          <button id="themeToggle" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">◐</button>
+        </div>
+      </header>
+
+      <section id="dashboard" class="view active">
+        <div class="hero-grid">
+          <article class="hero-card">
+            <div class="hero-copy">
+              <p class="eyebrow">Current plan</p>
+              <h3 id="todayFocus">Loading…</h3>
+              <p id="todayTask" class="muted"></p>
+              <div class="hero-meta">
+                <span id="todayHours"></span>
+                <span id="todayQuestions"></span>
+              </div>
+            </div>
+            <div class="countdown">
+              <strong id="daysRemaining">—</strong>
+              <span>days remaining</span>
+            </div>
+          </article>
+
+          <article class="card checkin-card">
+            <div class="card-head">
+              <div>
+                <p class="eyebrow">Daily check-in</p>
+                <h3 id="checkinDate">Today</h3>
+              </div>
+              <span id="savedBadge" class="saved-badge">Saved locally</span>
+            </div>
+            <form id="checkinForm" class="checkin-form">
+              <label>
+                <span>Actual hours</span>
+                <input id="actualHours" type="number" min="0" max="16" step="0.25" placeholder="0" />
+              </label>
+              <label>
+                <span>Questions attempted</span>
+                <input id="attempted" type="number" min="0" step="1" placeholder="0" />
+              </label>
+              <label>
+                <span>Correct</span>
+                <input id="correct" type="number" min="0" step="1" placeholder="0" />
+              </label>
+              <label>
+                <span>Confidence</span>
+                <select id="confidence">
+                  <option value="">—</option>
+                  <option value="1">1 · Low</option>
+                  <option value="2">2</option>
+                  <option value="3">3 · Medium</option>
+                  <option value="4">4</option>
+                  <option value="5">5 · High</option>
+                </select>
+              </label>
+              <label>
+                <span>Status</span>
+                <select id="status">
+                  <option>Not Started</option>
+                  <option>Partial</option>
+                  <option>Done</option>
+                  <option>Skipped</option>
+                </select>
+              </label>
+              <label class="span-2">
+                <span>Weak area / notes</span>
+                <textarea id="notes" rows="2" placeholder="What was difficult? What should you revisit?"></textarea>
+              </label>
+              <div class="span-2 form-actions">
+                <button class="primary-btn" type="submit">Save today's progress</button>
+                <span id="accuracyPreview" class="muted"></span>
+              </div>
+            </form>
+          </article>
+        </div>
+
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <div class="dashboard-grid">
+          <article class="card chart-card">
+            <div class="card-head">
+              <div>
+                <p class="eyebrow">Hours</p>
+                <h3>Cumulative study progress</h3>
+              </div>
+              <div class="legend">
+                <span><i class="dot planned"></i>Planned</span>
+                <span><i class="dot actual"></i>Actual</span>
+              </div>
+            </div>
+            <canvas id="hoursChart" height="260" aria-label="Cumulative study hours chart"></canvas>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <div>
+                <p class="eyebrow">Sequence</p>
+                <h3>First-pass roadmap</h3>
+              </div>
+            </div>
+            <div id="roadmap" class="roadmap"></div>
+          </article>
+        </div>
+
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">Topic progress</p>
+              <h3>First-pass completion</h3>
+            </div>
+          </div>
+          <div id="topicProgress" class="topic-progress-grid"></div>
+        </article>
+      </section>
+
+      <section id="daily" class="view">
+        <article class="card">
+          <div class="table-toolbar">
+            <div>
+              <p class="eyebrow">150-day plan</p>
+              <h3>Daily study log</h3>
+            </div>
+            <div class="filters">
+              <input id="dailySearch" type="search" placeholder="Search topic or notes…" />
+              <select id="statusFilter">
+                <option value="">All statuses</option>
+                <option>Not Started</option>
+                <option>Partial</option>
+                <option>Done</option>
+                <option>Skipped</option>
+              </select>
+              <button id="jumpToday" class="secondary-btn">Jump to today</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="dailyTable">
+              <thead>
+                <tr>
+                  <th>Date</th><th>Phase</th><th>Topic / Focus</th><th>Planned</th>
+                  <th>Actual</th><th>Questions</th><th>Correct</th><th>Accuracy</th>
+                  <th>Confidence</th><th>Status</th><th>Weak area / Notes</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section id="topics" class="view">
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">Priority order</p>
+              <h3>Topic plan</h3>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="topicTable">
+              <thead>
+                <tr>
+                  <th>#</th><th>Priority</th><th>Topic</th><th>2027 weight</th><th>Study window</th>
+                  <th>Target hours</th><th>Actual hours</th><th>Questions</th><th>Accuracy</th><th>Course</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section id="weekly" class="view">
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">Weekly checkpoints</p>
+              <h3>Weekly plan</h3>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="weeklyTable">
+              <thead>
+                <tr>
+                  <th>Week</th><th>Dates</th><th>Main focus</th><th>Target hours</th>
+                  <th>Actual hours</th><th>Questions</th><th>Accuracy</th><th>Plan status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <footer>
+        <p>Progress is stored in this browser using localStorage. Export a backup regularly if you use GitHub Pages.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
